@@ -9,18 +9,34 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class LoggingAndSecurityAspect {
 
-    @Pointcut("execution(* get*())")
-    private void allGetMethods(){}
+    @Pointcut("execution(* aop.UniLibrary.get*())")
+    private void allGetMethodsFromUniLibrary(){}
 
-    @Before("allGetMethods()")
+    @Pointcut("execution(* aop.UniLibrary.return*())")
+    private void allReturnMethodsFromUniLibrary(){}
+
+    @Pointcut("allGetMethodsFromUniLibrary() || allReturnMethodsFromUniLibrary()")
+    private void allGetAndReturnMethodsFromUniLibrary(){}
+
+    @Before("allGetAndReturnMethodsFromUniLibrary()")
+    public void beforeAllGetAndReturnLoggingAdvice(){
+        System.out.println("beforeAllGetAndReturnLoggingAdvice: write log 3");
+    }
+
+    @Before("allGetMethodsFromUniLibrary()")
     public void beforeGetLoggingAdvice(){
-        System.out.println("beforeGetBookAdvice: try getting the book/magazine");
+        System.out.println("beforeGetLoggingAdvice: try getting the book/magazine writing log 1");
     }
 
-    @Before("allGetMethods()")
-    public void beforeGetSecurityAdvice(){
-        System.out.println("beforeGetSecurityAdvice: Verification of eligibility the book/magazine");
+   @Before("allReturnMethodsFromUniLibrary()")
+    public void beforeReturnLoggingAdvice(){
+        System.out.println("beforeReturnLoggingAdvice: try getting the book/magazine writing log 2");
     }
+
+//    @Before("allGetMethods()")
+//    public void beforeGetSecurityAdvice(){
+//        System.out.println("beforeGetSecurityAdvice: Verification of eligibility the book/magazine");
+//    }
 
 //    @Before("execution(* returnBook())")
 //    public void beforeReturnBookAdvice(){
